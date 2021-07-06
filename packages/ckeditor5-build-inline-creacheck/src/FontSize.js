@@ -7,7 +7,7 @@ class FontSize extends Plugin {
 		this.customFontSizeDropDown(editor);
 		this.handleEnterKeyPress();
 	}
-	addClassToListElement(editor) {
+	addClassToListElement(editor, classToAdd) {
 		// Both the data and the editing pipelines are affected by this conversion.
 		editor.conversion.for('downcast').add((dispatcher) => {
 			// Headings are represented in the model as a "heading1" element.
@@ -16,14 +16,21 @@ class FontSize extends Plugin {
 				'insert:listItem',
 				(evt, data, conversionApi) => {
 					const viewWriter = conversionApi.writer;
-					for (const child of data.item.getChildren()) {
-						let liClass = child.hasAttribute('fontSize')
-							? `text-${child.getAttribute('fontSize')}`
-							: 'text-default';
-						// console.log('liClass', liClass);
-						// console.log('data', data);
-						viewWriter.addClass(
-							liClass,
+					const childCount = data.item.childCount;
+					if (childCount > 0) {
+						for (const child of data.item.getChildren()) {
+							let liClass = child.hasAttribute('fontSize')
+								? `text-${child.getAttribute('fontSize')}`
+								: 'text-default';
+							viewWriter.addClass(
+								liClass,
+								conversionApi.mapper.toViewElement(data.item)
+							);
+						}
+					} else {
+						viewWriter.setAttribute(
+							'class',
+							classToAdd,
 							conversionApi.mapper.toViewElement(data.item)
 						);
 					}
@@ -41,89 +48,7 @@ class FontSize extends Plugin {
 					data.view.selection.focus.parent.parent.getAttribute(
 						'class'
 					);
-				// const listItem = data.view.selection.focus.parent.parent.parent;
-				// console.log('classToAdd', classToAdd);
-				// console.log('listItem', listItem);
-				// console.log('editor', editor);
-				// console.log('data', data);
-				// console.log('evt', evt);
-				// writer.setAttribute('class', `text-${value}`, listItem);
-				// console.log(
-				// 	'nextSibling',
-				// 	evt.source.selection.focus.parent.parent.nextSibling
-				// );
-				// console.log(
-				// 	'previousSibling',
-				// 	evt.source.selection.focus.parent.parent.addClass()
-				// );
-				if (listItem.name == 'li') {
-					// const listItem =
-					// 	evt._currentTarget.selection.focus.parent.parent.parent;
-					// editor.editing.view.document.selection.focus.parent;
-					editor.editing.view.change((writer) => {
-						console.log('classToAdd', classToAdd);
-						// console.log('data', data.view.getSelection());
-						// console.log(
-						// 	'data 123',
-						// 	data.view.selection.getSelection()
-						// );
-						// console.log(
-						// 	'data 1234',
-						// 	data.view.selection.nextSibling()
-						// );
-
-						// console.log(
-						// 	'data 12345',
-						// 	data.view.selection.previousSibling()
-						// );
-						const listItem =
-							data.view.selection.focus.parent.parent;
-						// console.log('list 123', listItem);
-
-						writer.setAttribute('class', classToAdd, listItem);
-					});
-					// this.addClassToListElement(editor);
-					// editor.editing.view.change((writer) => {
-					// 	console.log('classToAdd view', classToAdd);
-					// 	console.log('listItem view', listItem);
-					// 	console.log('writer view', writer);
-					// 	writer.createElement('paragraph');
-					// 	// writer.setAttribute('class', classToAdd, listItem);
-					// 	// writer.insertElement(
-					// 	// 	'listItem',
-					// 	// 	{ class: classToAdd },
-					// 	// 	0
-					// 	// );
-					// 	// writer.cloneElement(listItem, true);
-					// 	// writer.cloneElement(listItem, false);
-					// });
-
-					// editor.editing.model.change((writer) => {
-					// 	console.log('classToAdd model', classToAdd);
-					// 	console.log('listItem model', listItem);
-					// 	console.log('writer model', writer);
-					// 	writer.createElement('paragraph');
-					// 	// writer.setAttribute('class', classToAdd, listItem);
-					// 	// writer.insertElement(
-					// 	// 	'listItem',
-					// 	// 	{ class: classToAdd },
-					// 	// 	0
-					// 	// );
-					// 	// writer.cloneElement(listItem, true);
-					// 	// writer.cloneElement(listItem, false);
-					// });
-					// editor.conversion.for('downcast').add((dispatcher) => {
-					// 	dispatcher.on(
-					// 		'attribute:class:listItem',
-					// 		(evt, data, conversionApi) => {
-					// 			const viewWriter = conversionApi.writer;
-					// 			viewWriter.createElement('listItem', {
-					// 				class: classToAdd,
-					// 			});
-					// 		}
-					// 	);
-					// });
-				}
+				this.addClassToListElement(editor, classToAdd);
 			}
 		});
 	}
