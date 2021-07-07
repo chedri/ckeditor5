@@ -30,7 +30,9 @@ class FontSize extends Plugin {
 					} else {
 						viewWriter.setAttribute(
 							'class',
-							classToAdd,
+							classToAdd === undefined
+								? 'text-default'
+								: classToAdd,
 							conversionApi.mapper.toViewElement(data.item)
 						);
 					}
@@ -60,13 +62,17 @@ class FontSize extends Plugin {
 			// Use original fontSize button - we only changes its behavior.
 			const dropdownView = editor.ui.componentFactory.create('fontSize');
 			dropdownView.on('execute', (evt) => {
+				const commandParam =
+					evt.source.commandParam === undefined
+						? 'default'
+						: evt.source.commandParam;
 				const listItem =
 					editor.editing.view.document.selection.focus.parent;
 				if (listItem.name == 'li') {
 					editor.editing.view.change((writer) => {
 						writer.setAttribute(
 							'class',
-							`text-${evt.source.commandParam}`,
+							`text-${commandParam}`,
 							listItem
 						);
 					});
@@ -77,7 +83,7 @@ class FontSize extends Plugin {
 					editor.editing.view.change((writer) => {
 						writer.setAttribute(
 							'class',
-							`text-${evt.source.commandParam}`,
+							`text-${commandParam}`,
 							listItem
 						);
 					});
