@@ -45,13 +45,17 @@ class FontSize extends Plugin {
 	handleEnterKeyPress() {
 		const editor = this.editor;
 		editor.editing.view.document.on('enter', (evt, data) => {
-			if (data.view.selection.focus.isAtEnd) {
-				const classToAdd =
-					data.view.selection.focus.parent.parent.getAttribute(
-						'class'
-					);
-				this.addClassToListElement(editor, classToAdd);
-			}
+			// if (data.view.selection.focus.isAtEnd) {
+			const classToAdd =
+				data.view.selection.focus.parent.parent.getAttribute('class');
+			this.addClassToListElement(editor, classToAdd);
+			// }
+		});
+	}
+
+	setClass(editor, addClass, item) {
+		editor.editing.view.change((writer) => {
+			writer.setAttribute('class', `text-${addClass}`, item);
 		});
 	}
 
@@ -69,24 +73,13 @@ class FontSize extends Plugin {
 				const listItem =
 					editor.editing.view.document.selection.focus.parent;
 				if (listItem.name == 'li') {
-					editor.editing.view.change((writer) => {
-						writer.setAttribute(
-							'class',
-							`text-${commandParam}`,
-							listItem
-						);
-					});
+					this.setClass(editor, commandParam, listItem);
 				} else {
 					const listItem =
 						editor.editing.view.document.selection.focus.parent
 							.parent;
-					editor.editing.view.change((writer) => {
-						writer.setAttribute(
-							'class',
-							`text-${commandParam}`,
-							listItem
-						);
-					});
+					if (listItem.name === 'li')
+						this.setClass(editor, commandParam, listItem);
 				}
 			});
 			return dropdownView;
