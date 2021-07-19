@@ -58,13 +58,11 @@ export default class InlineEditor extends InlineEditorBase {}
 // Plugins to include in the build.
 InlineEditor.builtinPlugins = [
 	// SpanTag,
-	FontSize,
 	Font,
 	FontBackgroundColor,
 	FontColor,
 	FontFamily,
 	FontBackgroundColor,
-	// FontSize,
 	RemoveFormat,
 	SpecialCharacters,
 	SpecialCharactersArrows,
@@ -97,6 +95,7 @@ InlineEditor.builtinPlugins = [
 	TableProperties,
 	TextTransformation,
 	WordCount,
+	FontSize,
 ];
 
 // Editor configuration.

@@ -3,59 +3,18 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 class FontSize extends Plugin {
 	init() {
 		const editor = this.editor;
-		this.addClassToListElement(editor);
+		this.allowAttributeCcFontSizeInList(editor);
 		this.customFontSizeDropDown(editor);
-		this.handleEnterKeyPress();
-	}
-	addClassToListElement(editor, classToAdd) {
-		// Both the data and the editing pipelines are affected by this conversion.
-		editor.conversion.for('downcast').add((dispatcher) => {
-			// Headings are represented in the model as a "heading1" element.
-			// Use the "low" listener priority to apply the changes after the headings feature.
-			dispatcher.on(
-				'insert:listItem',
-				(evt, data, conversionApi) => {
-					const viewWriter = conversionApi.writer;
-					const childCount = data.item.childCount;
-					if (childCount > 0) {
-						for (const child of data.item.getChildren()) {
-							let liClass = child.hasAttribute('fontSize')
-								? `text-${child.getAttribute('fontSize')}`
-								: 'text-default';
-							viewWriter.addClass(
-								liClass,
-								conversionApi.mapper.toViewElement(data.item)
-							);
-						}
-					} else {
-						viewWriter.setAttribute(
-							'class',
-							classToAdd === undefined
-								? 'text-default'
-								: classToAdd,
-							conversionApi.mapper.toViewElement(data.item)
-						);
-					}
-				},
-				{ priority: 'low' }
-			);
-		});
-	}
-
-	handleEnterKeyPress() {
-		const editor = this.editor;
-		editor.editing.view.document.on('enter', (evt, data) => {
-			// if (data.view.selection.focus.isAtEnd) {
-			const classToAdd =
-				data.view.selection.focus.parent.parent.getAttribute('class');
-			this.addClassToListElement(editor, classToAdd);
-			// }
-		});
 	}
 
 	setClass(editor, addClass, item) {
 		editor.editing.view.change((writer) => {
 			writer.setAttribute('class', `text-${addClass}`, item);
+			writer.setAttribute('ccfontsize', `text-${addClass}`, item);
+		});
+		editor.model.change(modelWriter => {
+			console.log('data check view:', editor.model.document.selection.getFirstPosition().parent);
+			modelWriter.setAttribute('listFontsize', `text-${addClass}`, editor.model.document.selection.getFirstPosition().parent);
 		});
 	}
 
@@ -83,6 +42,52 @@ class FontSize extends Plugin {
 				}
 			});
 			return dropdownView;
+		});
+	}
+
+	allowAttributeCcFontSizeInList(editor) {
+		editor.model.schema.extend('listItem', { allowAttributes: 'listFontsize' });
+
+		editor.conversion.for('downcast').add(dispatcher => {
+			dispatcher.on('attribute', (evt, data, conversionApi) => {
+
+				if (data.item.name != 'listItem') {
+					return;
+				}
+
+				const viewWriter = conversionApi.writer;
+				const viewElement = conversionApi.mapper.toViewElement(
+					data.item
+				);
+
+				if( data.attributeKey == 'listFontsize' ) {
+					viewWriter.setAttribute(
+						'ccfontsize',
+						data.attributeNewValue,
+						viewElement
+					);
+					viewWriter.setAttribute(
+						'class',
+						data.attributeNewValue,
+						viewElement
+					);
+				}
+			});
+		});
+
+		editor.conversion.for('upcast').attributeToAttribute({
+			model: {
+				name: 'listItem',
+				key: 'listFontsize',
+				value: viewElement => {
+						return viewElement.getAttribute( 'ccfontsize' );
+					}
+			},
+			view: {
+				name: 'li',
+				key: 'ccfontsize',
+			},
+			converterPriority: 'lowest'
 		});
 	}
 }
