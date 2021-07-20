@@ -57,7 +57,7 @@ export default class InlineEditor extends InlineEditorBase {}
 
 // Plugins to include in the build.
 InlineEditor.builtinPlugins = [
-	// SpanTag,
+	SpanTag,
 	Font,
 	FontBackgroundColor,
 	FontColor,
