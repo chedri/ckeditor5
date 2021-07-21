@@ -6,14 +6,12 @@
 // The editor creator to use.
 import InlineEditorBase from '@ckeditor/ckeditor5-editor-inline/src/inlineeditor';
 
-import SpanTag from './SpanTag';
 import FontSize from './FontSize';
 import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
 import {
 	FontBackgroundColor,
 	FontColor,
 	FontFamily,
-	// FontSize,
 	Font,
 } from '@ckeditor/ckeditor5-font';
 import RemoveFormat from '@ckeditor/ckeditor5-remove-format/src/removeformat';
@@ -57,7 +55,6 @@ export default class InlineEditor extends InlineEditorBase {}
 
 // Plugins to include in the build.
 InlineEditor.builtinPlugins = [
-	// SpanTag,
 	Font,
 	FontBackgroundColor,
 	FontColor,

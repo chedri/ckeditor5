@@ -13,7 +13,6 @@ class FontSize extends Plugin {
 			writer.setAttribute('ccfontsize', `text-${addClass}`, item);
 		});
 		editor.model.change(modelWriter => {
-			console.log('data check view:', editor.model.document.selection.getFirstPosition().parent);
 			modelWriter.setAttribute('listFontsize', `text-${addClass}`, editor.model.document.selection.getFirstPosition().parent);
 		});
 	}
