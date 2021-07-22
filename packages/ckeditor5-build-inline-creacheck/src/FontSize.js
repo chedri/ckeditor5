@@ -13,7 +13,6 @@ class FontSize extends Plugin {
 			writer.setAttribute('ccfontsize', `text-${addClass}`, item);
 		});
 		editor.model.change(modelWriter => {
-			console.log('data check view:', editor.model.document.selection.getFirstPosition().parent);
 			modelWriter.setAttribute('listFontsize', `text-${addClass}`, editor.model.document.selection.getFirstPosition().parent);
 		});
 	}
@@ -80,8 +79,8 @@ class FontSize extends Plugin {
 				name: 'listItem',
 				key: 'listFontsize',
 				value: viewElement => {
-						return viewElement.getAttribute( 'ccfontsize' );
-					}
+					return viewElement.getAttribute( 'ccfontsize' );
+				}
 			},
 			view: {
 				name: 'li',

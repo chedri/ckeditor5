@@ -14,7 +14,6 @@ import {
 	FontBackgroundColor,
 	FontColor,
 	FontFamily,
-	// FontSize,
 	Font,
 } from '@ckeditor/ckeditor5-font';
 import RemoveFormat from '@ckeditor/ckeditor5-remove-format/src/removeformat';
@@ -58,10 +57,12 @@ export default class InlineEditor extends InlineEditorBase {}
 
 // Plugins to include in the build.
 InlineEditor.builtinPlugins = [
+	List,
+	ListStyle,
 	Icons,
 	// SpanTag,
 	Font,
-	FontBackgroundColor,
+	FontSize,
 	FontColor,
 	FontFamily,
 	FontBackgroundColor,
@@ -88,8 +89,6 @@ InlineEditor.builtinPlugins = [
 	Indent,
 	IndentBlock,
 	Link,
-	List,
-	ListStyle,
 	Paragraph,
 	Table,
 	TableToolbar,
@@ -97,7 +96,6 @@ InlineEditor.builtinPlugins = [
 	TableProperties,
 	TextTransformation,
 	WordCount,
-	FontSize,
 ];
 
 // Editor configuration.
