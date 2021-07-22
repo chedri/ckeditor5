@@ -79,8 +79,8 @@ class FontSize extends Plugin {
 				name: 'listItem',
 				key: 'listFontsize',
 				value: viewElement => {
-						return viewElement.getAttribute( 'ccfontsize' );
-					}
+					return viewElement.getAttribute( 'ccfontsize' );
+				}
 			},
 			view: {
 				name: 'li',
