@@ -7,7 +7,6 @@
 import InlineEditorBase from '@ckeditor/ckeditor5-editor-inline/src/inlineeditor';
 
 import Icons from './Icons';
-import SpanTag from './SpanTag';
 import FontSize from './FontSize';
 import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
 import {
@@ -60,7 +59,6 @@ InlineEditor.builtinPlugins = [
 	List,
 	ListStyle,
 	Icons,
-	// SpanTag,
 	Font,
 	FontSize,
 	FontColor,
