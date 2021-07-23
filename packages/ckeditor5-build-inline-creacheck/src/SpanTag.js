@@ -12,13 +12,11 @@ class SpanTag extends Plugin {
 	createElement(editor, element) {
 		editor.model.change((writer) => {
 			const root = editor.model.document.getRoot();
-			const clonedElement = writer.cloneElement(element);
-			writer.insert(clonedElement, root);
-			// const newElement = writer.insertElement(
-			// 	element.name,
-			// 	element,
-			// 	'after'
-			// );
+			const newElement = writer.createElement(element.name, {
+				invert: true,
+			});
+			writer.insert(newElement, element, 'after');
+			writer.setSelection(newElement, 'on');
 		});
 	}
 
@@ -66,10 +64,30 @@ class SpanTag extends Plugin {
 		editor.conversion.for('downcast').attributeToElement({
 			model: 'invert',
 			view: (attributeValue, { writer }) => {
-				const classToAdd =
-					editor.commands.get('fontSize').value === undefined
-						? 'text-default'
-						: `text-${editor.commands.get('fontSize').value}`;
+				let classToAdd = null;
+				if (editor.editing.view.document.selection.focus) {
+					if (
+						editor.editing.view.document.selection.focus.parent
+							.previousSibling
+					) {
+						if (
+							editor.editing.view.document.selection.focus.parent.previousSibling.getChild(
+								0
+							)
+						) {
+							console.log('hini');
+							classToAdd =
+								editor.editing.view.document.selection.focus.parent.previousSibling
+									.getChild(0)
+									.getClassNames();
+						}
+					}
+				} else {
+					classToAdd =
+						editor.commands.get('fontSize').value === undefined
+							? 'text-default'
+							: `text-${editor.commands.get('fontSize').value}`;
+				}
 				const spanTag = writer.createAttributeElement(
 					'span',
 					{
