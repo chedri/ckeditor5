@@ -13,6 +13,7 @@ import {
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import Model from '@ckeditor/ckeditor5-ui/src/model';
 import fontSizeIcon from '../../ckeditor5-font/theme/icons/font-size.svg';
+import FreeSampleIcon from './icons/Freesample.svg';
 
 class Icon extends Plugin {
 	static get requires() {
@@ -101,9 +102,9 @@ function getDropdownItemsDefinitions({ icons }) {
 			type: 'button',
 			model: new Model({
 				commandParam: value,
-				label: name,
+				label: '',
 				withText: true,
-				icon: fontSizeIcon,
+				icon: FreeSampleIcon,
 			}),
 		};
 
