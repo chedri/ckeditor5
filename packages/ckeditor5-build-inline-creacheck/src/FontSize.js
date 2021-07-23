@@ -90,4 +90,5 @@ class FontSize extends Plugin {
 		});
 	}
 }
+
 export default FontSize;

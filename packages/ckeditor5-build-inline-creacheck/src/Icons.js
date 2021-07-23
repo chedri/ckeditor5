@@ -131,6 +131,7 @@ class IconEditing extends Plugin {
 				(viewElement) => viewElement.hasClass('icon')
 			)
 		);
+
 		this.editor.config.define('iconConfig', {
 			icons: [
 				{ value: 'fab fa-500px', name: 'Icon 1' },
