@@ -14,6 +14,9 @@ import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import Model from '@ckeditor/ckeditor5-ui/src/model';
 import fontSizeIcon from '../../ckeditor5-font/theme/icons/font-size.svg';
 import FreeSampleIcon from './icons/Freesample.svg';
+import at_ihk from './icons/at_ihk.svg';
+import pfeil_ihk from './icons/pfeil_ihk.svg';
+import telefon_ihk from './icons/telefon_ihk.svg';
 
 class Icon extends Plugin {
 	static get requires() {
@@ -59,6 +62,7 @@ class IconUI extends Plugin {
 		const editor = this.editor;
 		const t = editor.t;
 		const icons = editor.config.get('iconConfig');
+		console.log('icons', icons);
 
 		// The "icon" dropdown must be registered among the UI components of the editor
 		// to be displayed in the toolbar.
@@ -67,13 +71,26 @@ class IconUI extends Plugin {
 
 			// Populate the list in the dropdown with items.
 			addListToDropdown(dropdownView, getDropdownItemsDefinitions(icons));
-
+			let icon = null;
+			// const getIcons = (urls) => {
+			// 	console.log('urls', urls);
+			// 	_.forEach(urls, (url) => {
+			// 		console.log('url', url);
+			// 		fetch(url)
+			// 			.then((res) => res.text())
+			// 			.then((text) => {
+			// 				console.log('text', text);
+			// 				icon = text;
+			// 			});
+			// 	});
+			// };
+			// console.log('icon', icon);
 			dropdownView.buttonView.set({
 				// The t() function helps localize the editor. All strings enclosed in t() can be
 				// translated and change when the language of the editor changes.
-				label: t('Icon'),
+				label: '',
 				tooltip: true,
-				withText: true,
+				withText: false,
 				icon: fontSizeIcon,
 			});
 
@@ -97,20 +114,54 @@ class IconUI extends Plugin {
 function getDropdownItemsDefinitions({ icons }) {
 	const itemDefinitions = new Collection();
 
-	for (const { name, value } of icons) {
+	const testIcons = [
+		{ name: 'pfeil_ihk', value: pfeil_ihk },
+		{ name: 'at_ihk', value: at_ihk },
+		{ name: 'telefon_ihk', value: telefon_ihk },
+	];
+
+	// testIcons.forEach((icon) => {
+	// 	console.log('url', icon);
+	// const removeExtension = icon.replace(/\.[^/.]+$/, '');
+	// const iconName = removeExtension.split('/');
+	// fetch(icon)
+	// 	.then((res) => res.text())
+	// 	.then((text) => {
+	// 		console.log('text', text);
+	// const definition = {
+	// 	type: 'button',
+	// 	model: new Model({
+	// 		commandParam: testIcons.name,
+	// 		label: '',
+	// 		withText: false,
+	// 		icon: testIcons.value,
+	// 	}),
+	// };
+	// Add the item definition to the collection.
+	// itemDefinitions.add(definition);
+	// });
+	// });
+
+	// for (const icon of testIcons) {
+	testIcons.forEach((icon, index) => {
+		console.log('icon', Object.keys(icon)[1]);
+		console.log('pfeil_ihk', pfeil_ihk);
 		const definition = {
 			type: 'button',
 			model: new Model({
-				commandParam: value,
+				commandParam: icon.name,
 				label: '',
-				withText: true,
-				icon: FreeSampleIcon,
+				withText: false,
+				icon: pfeil_ihk,
 			}),
 		};
-
-		// Add the item definition to the collection.
 		itemDefinitions.add(definition);
-	}
+	});
+
+	// };
+
+	// Add the item definition to the collection.
+	// }
 
 	return itemDefinitions;
 }
@@ -132,14 +183,16 @@ class IconEditing extends Plugin {
 				(viewElement) => viewElement.hasClass('icon')
 			)
 		);
-		this.editor.config.define('iconConfig', {
-			icons: [
-				{ value: 'fab fa-500px', name: 'Icon 1' },
-				{ value: 'fab fa-accessible-icon', name: 'Icon 2' },
-				{ value: 'fab fa-accusoft', name: 'Icon 3' },
-				{ value: 'fab fa-acquisitions-incorporated', name: 'Icon 4' },
-			],
-		});
+		const icons = this.editor.config.get('iconConfig.icons');
+		console.log('icons', icons);
+		// this.editor.config.define('iconConfig', {
+		// 	icons: [
+		// 		{ value: 'fab fa-500px', name: 'Icon 1' },
+		// 		{ value: 'fab fa-accessible-icon', name: 'Icon 2' },
+		// 		{ value: 'fab fa-accusoft', name: 'Icon 3' },
+		// 		{ value: 'fab fa-acquisitions-incorporated', name: 'Icon 4' },
+		// 	],
+		// });
 	}
 
 	_defineSchema() {
