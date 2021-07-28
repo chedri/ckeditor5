@@ -20,13 +20,16 @@ class SpanTag extends Plugin {
 
 	handleEnterKeyPress() {
 		const editor = this.editor;
+
 		editor.editing.view.document.on('enter', (evt, data) => {
-			data.preventDefault();
-			evt.stop();
-			if (editor.model.document.selection !== null) {
-				const elementToCreate =
-					editor.model.document.selection.getFirstPosition().parent;
-				this.createElement(editor, elementToCreate);
+			if ( editor.model.document.selection.getFirstPosition().parent.name != 'listItem' ) {
+				data.preventDefault();
+				evt.stop();
+				if ( editor.model.document.selection !== null ) {
+					const elementToCreate =
+						editor.model.document.selection.getFirstPosition().parent;
+					this.createElement( editor, elementToCreate );
+				}
 			}
 		});
 	}
