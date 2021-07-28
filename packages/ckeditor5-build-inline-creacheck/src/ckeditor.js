@@ -6,9 +6,14 @@
 // The editor creator to use.
 import InlineEditorBase from '@ckeditor/ckeditor5-editor-inline/src/inlineeditor';
 
-import Sample from './Sample';
+import FontSize from './FontSize';
 import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
-import { FontBackgroundColor, FontColor, FontFamily, FontSize, Font } from '@ckeditor/ckeditor5-font';
+import {
+	FontBackgroundColor,
+	FontColor,
+	FontFamily,
+	Font,
+} from '@ckeditor/ckeditor5-font';
 import RemoveFormat from '@ckeditor/ckeditor5-remove-format/src/removeformat';
 import {
 	SpecialCharactersText,
@@ -17,9 +22,14 @@ import {
 	SpecialCharactersCurrency,
 	SpecialCharactersLatin,
 	SpecialCharactersArrows,
-	SpecialCharacters
+	SpecialCharacters,
 } from '@ckeditor/ckeditor5-special-characters';
-import { Subscript, Superscript, Strikethrough, Underline } from '@ckeditor/ckeditor5-basic-styles';
+import {
+	Subscript,
+	Superscript,
+	Strikethrough,
+	Underline,
+} from '@ckeditor/ckeditor5-basic-styles';
 import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline';
 import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
 import Autoformat from '@ckeditor/ckeditor5-autoformat/src/autoformat';
@@ -32,7 +42,12 @@ import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
 import Link from '@ckeditor/ckeditor5-link/src/link';
 import { List, ListStyle } from '@ckeditor/ckeditor5-list';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import { Table, TableToolbar, TableCellProperties, TableProperties } from '@ckeditor/ckeditor5-table';
+import {
+	Table,
+	TableToolbar,
+	TableCellProperties,
+	TableProperties,
+} from '@ckeditor/ckeditor5-table';
 import TextTransformation from '@ckeditor/ckeditor5-typing/src/texttransformation';
 import WordCount from '@ckeditor/ckeditor5-word-count/src/wordcount';
 
@@ -40,13 +55,13 @@ export default class InlineEditor extends InlineEditorBase {}
 
 // Plugins to include in the build.
 InlineEditor.builtinPlugins = [
-	Sample,
+	List,
+	ListStyle,
 	Font,
-	FontBackgroundColor,
+	FontSize,
 	FontColor,
 	FontFamily,
 	FontBackgroundColor,
-	FontSize,
 	RemoveFormat,
 	SpecialCharacters,
 	SpecialCharactersArrows,
@@ -70,15 +85,13 @@ InlineEditor.builtinPlugins = [
 	Indent,
 	IndentBlock,
 	Link,
-	List,
-	ListStyle,
 	Paragraph,
 	Table,
 	TableToolbar,
 	TableCellProperties,
 	TableProperties,
 	TextTransformation,
-	WordCount
+	WordCount,
 ];
 
 // Editor configuration.
@@ -101,24 +114,20 @@ InlineEditor.defaultConfig = {
 			'insertTable',
 			'mediaEmbed',
 			'undo',
-			'redo'
-		]
+			'redo',
+		],
 	},
 	image: {
 		toolbar: [
 			'imageStyle:full',
 			'imageStyle:side',
 			'|',
-			'imageTextAlternative'
-		]
+			'imageTextAlternative',
+		],
 	},
 	table: {
-		contentToolbar: [
-			'tableColumn',
-			'tableRow',
-			'mergeTableCells'
-		]
+		contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells'],
 	},
 	// This value must be kept in sync with the language defined in webpack.config.js.
-	language: 'de'
+	language: 'de',
 };
