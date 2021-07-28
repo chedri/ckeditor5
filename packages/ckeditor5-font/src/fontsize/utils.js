@@ -48,6 +48,17 @@ const namedPresets = {
 			}
 		};
 	},
+	get default() {
+		return{
+			title: 'Default',
+			model: 'default',
+			view: {
+				name: 'span',
+				classes: 'text-default',
+				priority: 7
+			}
+		}
+	},
 	get big() {
 		return {
 			title: 'Big',
@@ -88,14 +99,6 @@ function getOptionDefinition( option ) {
 	// Item is a named preset.
 	if ( preset ) {
 		return attachPriority( preset );
-	}
-
-	// 'Default' font size. It will be used to remove the fontSize attribute.
-	if ( option === 'default' ) {
-		return {
-			model: undefined,
-			title: 'Default'
-		};
 	}
 
 	// At this stage we probably have numerical value to generate a preset so parse it's value.
