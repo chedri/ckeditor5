@@ -7,10 +7,13 @@
 import InlineEditorBase from '@ckeditor/ckeditor5-editor-inline/src/inlineeditor';
 
 import FontSize from './FontSize';
+import SpanTag from './SpanTag';
+
 import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
 import {
 	FontBackgroundColor,
 	FontColor,
+	FontSize,
 	FontFamily,
 	Font,
 } from '@ckeditor/ckeditor5-font';
@@ -55,6 +58,7 @@ export default class InlineEditor extends InlineEditorBase {}
 
 // Plugins to include in the build.
 InlineEditor.builtinPlugins = [
+	SpanTag,
 	List,
 	ListStyle,
 	Font,
