@@ -50,12 +50,12 @@ const namedPresets = {
 	},
 	get default() {
 		return{
-			title:"Default",
-			model:"default",
+			title: 'Default',
+			model: 'default',
 			view: {
-				name:"span",
-				classes:"text-default",
-				priority:7
+				name: 'span',
+				classes: 'text-default',
+				priority: 7
 			}
 		}
 	},
