@@ -6,7 +6,6 @@
 // The editor creator to use.
 import InlineEditorBase from '@ckeditor/ckeditor5-editor-inline/src/inlineeditor';
 
-import Icons from './Icons';
 import FontSize from './FontSize';
 import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
 import {
@@ -58,7 +57,6 @@ export default class InlineEditor extends InlineEditorBase {}
 InlineEditor.builtinPlugins = [
 	List,
 	ListStyle,
-	Icons,
 	Font,
 	FontSize,
 	FontColor,
