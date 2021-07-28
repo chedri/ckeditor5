@@ -13,7 +13,6 @@ import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
 import {
 	FontBackgroundColor,
 	FontColor,
-	FontSize,
 	FontFamily,
 	Font,
 } from '@ckeditor/ckeditor5-font';
