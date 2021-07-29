@@ -7,11 +7,11 @@
 import InlineEditorBase from '@ckeditor/ckeditor5-editor-inline/src/inlineeditor';
 
 import Icons from './Icons';
-import FontSize from './FontSize';
 import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
 import {
 	FontBackgroundColor,
 	FontColor,
+	FontSize,
 	FontFamily,
 	Font,
 } from '@ckeditor/ckeditor5-font';
