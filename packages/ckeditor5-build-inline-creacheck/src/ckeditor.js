@@ -8,7 +8,7 @@ import InlineEditorBase from '@ckeditor/ckeditor5-editor-inline/src/inlineeditor
 
 import FontSize from './FontSize';
 import SpanTag from './SpanTag';
-
+import Icons from './Icons';
 import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
 import {
 	FontBackgroundColor,
