@@ -192,7 +192,7 @@ class IconEditing extends Plugin {
 			const iconView = viewWriter.createContainerElement(
 				'i',
 				{
-					class: iconClass,
+					class: iconClass + ' cc_icon',
 				},
 				{
 					isAllowedInsideAttributeElement: true,

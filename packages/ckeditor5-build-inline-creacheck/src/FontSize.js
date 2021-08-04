@@ -47,6 +47,14 @@ class FontSize extends Plugin {
 	allowAttributeCcFontSizeInList(editor) {
 		editor.model.schema.extend('listItem', { allowAttributes: 'listFontsize' });
 
+		editor.conversion.for( 'downcast' ).add( dispatcher => {
+			dispatcher.on( 'insert:listItem', ( evt, data, conversionApi ) => {
+				if ( data.item.getAttribute( 'listFontsize' ) === undefined) {
+					this.setClass( editor, 'default', data.item );
+				}
+			} );
+		} );
+
 		editor.conversion.for('downcast').add(dispatcher => {
 			dispatcher.on('attribute', (evt, data, conversionApi) => {
 

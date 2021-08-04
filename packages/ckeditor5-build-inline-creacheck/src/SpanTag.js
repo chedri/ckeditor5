@@ -3,25 +3,33 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 class SpanTag extends Plugin {
 	init() {
 		const editor = this.editor;
-		this._defineSchema(editor);
-		this._defineConverters(editor);
+		this._defineSchema( editor );
+		this._defineConverters( editor );
 		this.handleEnterKeyPress();
 	}
 
-	createElement(editor, element) {
-		const fontSize = element.getChild(0).getAttribute('fontSize');
-		editor.model.change((writer) => {
-			const newElement = writer.createElement(element.name);
-			writer.insertText(' ', { invert: true, fontSize }, newElement);
-			writer.insert(newElement, element, 'after');
-			writer.setSelection(newElement, 0);
+	createElement( editor, element ) {
+		const fontSize = element.getChild( 0 ).getAttribute( 'fontSize' );
+		editor.model.change( ( writer ) => {
+			const newElement = writer.createElement( element.name );
+			writer.insertText( ' ', { invert: true, fontSize }, newElement );
+			if (editor.model.document.selection.focus.isAtEnd) {
+				writer.insert( newElement, element, 'after' );
+				writer.setSelection( newElement, 1 );
+			} else if ( editor.model.document.selection.focus.isAtStart ) {
+				writer.insert( newElement, element, 'before' );
+				writer.setSelection( newElement, 0 );
+			} else {
+				const positionOfSplit = writer.split( editor.model.document.selection.getFirstPosition() );
+				writer.setSelection( writer.createPositionBefore( positionOfSplit.position.nodeAfter ) );
+			}
 		});
 	}
 
 	handleEnterKeyPress() {
 		const editor = this.editor;
 
-		editor.editing.view.document.on('enter', (evt, data) => {
+		editor.editing.view.document.on( 'enter', ( evt, data ) => {
 			if ( editor.model.document.selection.getFirstPosition().parent.name != 'listItem' ) {
 				data.preventDefault();
 				evt.stop();
@@ -34,15 +42,16 @@ class SpanTag extends Plugin {
 		});
 	}
 
-	_defineSchema(editor) {
-		editor.model.schema.extend('$text', {
+	_defineSchema( editor ) {
+		editor.model.schema.extend( '$text', {
 			allowAttributes: 'invert',
-		});
+		} );
 	}
-	_defineConverters(editor, fontSize) {
-		editor.conversion.for('downcast').attributeToElement({
+
+	_defineConverters( editor ) {
+		editor.conversion.for( 'downcast' ).attributeToElement({
 			model: 'invert',
-			view: (attributeValue, { writer }) => {
+			view: ( attributeValue, { writer } ) => {
 				const spanTag = writer.createAttributeElement(
 					'span',
 					{},
@@ -50,14 +59,14 @@ class SpanTag extends Plugin {
 				);
 				return spanTag;
 			},
-		});
-		editor.conversion.for('upcast').attributeToAttribute({
+		} );
+		editor.conversion.for( 'upcast' ).attributeToAttribute( {
 			view: {
 				name: 'span',
 				key: 'class',
 			},
 			model: 'invert',
-		});
+		} );
 	}
 }
 
