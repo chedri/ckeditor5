@@ -6,6 +6,7 @@
 // The editor creator to use.
 import InlineEditorBase from '@ckeditor/ckeditor5-editor-inline/src/inlineeditor';
 
+import KeepFontsize from './KeepFontsize';
 import FontSize from './FontSize';
 import SpanTag from './SpanTag';
 import Icons from './Icons';
@@ -57,6 +58,7 @@ export default class InlineEditor extends InlineEditorBase {}
 
 // Plugins to include in the build.
 InlineEditor.builtinPlugins = [
+	KeepFontsize,
 	SpanTag,
 	List,
 	ListStyle,
