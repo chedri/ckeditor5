@@ -44,13 +44,25 @@ class FontSize extends Plugin {
 		});
 	}
 
-	allowAttributeCcFontSizeInList(editor) {
-		editor.model.schema.extend('listItem', { allowAttributes: 'listFontsize' });
+	allowAttributeCcFontSizeInList( editor ) {
+		editor.model.schema.extend( 'listItem', { allowAttributes: 'listFontsize' } );
 
 		editor.conversion.for( 'downcast' ).add( dispatcher => {
 			dispatcher.on( 'insert:listItem', ( evt, data, conversionApi ) => {
-				if ( data.item.getAttribute( 'listFontsize' ) === undefined) {
-					this.setClass( editor, 'default', data.item );
+				if ( data.item.getAttribute( 'listFontsize' ) === undefined ) {
+					const viewWriter = conversionApi.writer;
+					const viewElement = conversionApi.mapper.toViewElement( data.item );
+
+					viewWriter.setAttribute( 'ccfontsize', 'text-default', viewElement );
+					viewWriter.setAttribute( 'class', 'text-default', viewElement );
+
+					editor.model.change( modelWriter => {
+						modelWriter.setAttribute(
+							'listFontsize',
+							'text-default',
+							data.item
+						);
+					} );
 				}
 			} );
 		} );
