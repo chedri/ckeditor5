@@ -159,7 +159,7 @@ class IconEditing extends Plugin {
 		const conversion = this.editor.conversion;
 
 		conversion.for('upcast').elementToElement({
-			view: { name: 'i', key: 'class' },
+			view: { name: 'tt', key: 'class' },
 			model: (viewElement, { writer: modelWriter }) => {
 				// Extract the "name" from "{name}".
 				const iconClass = viewElement.getAttribute('class');
@@ -190,7 +190,7 @@ class IconEditing extends Plugin {
 		function createIconView(modelItem, viewWriter) {
 			const iconClass = modelItem.getAttribute('class');
 			const iconView = viewWriter.createContainerElement(
-				'i',
+				'tt',
 				{
 					class: iconClass + ' cc_icon',
 				},
