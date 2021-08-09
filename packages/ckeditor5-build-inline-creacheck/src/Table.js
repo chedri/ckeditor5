@@ -1,189 +1,124 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 class TableExtended extends Plugin {
+
 	init() {
 		const editor = this.editor;
-		this.AddTargetToExternalLinks(editor);
+		this.addClassesToTables( editor );
 	}
 
-	AddTargetToExternalLinks(editor) {
-		// editor.model.schema.extend('table', {
-		// 	allowAttributes: 'class',
-		// });
-		// editor.model.schema.extend('tableRow', {
-		// 	allowAttributes: 'class',
-		// });
-		// editor.model.schema.extend('tableCell', {
-		// 	allowAttributes: 'class',
-		// });
+	addClassesToTables( editor ) {
+		editor.model.schema.extend( 'table', {
+			allowAttributes: [ 'totalRows', 'totalCols' ]
+		} );
 
-		// Both the data and the editing pipelines are affected by this conversion.
-		editor.conversion.for('downcast').add((dispatcher) => {
-			// Links are represented in the model as a "linkHref" attribute.
-			// Use the "low" listener priority to apply the changes after the link feature.
+		editor.model.schema.extend( 'tableRow', {
+			allowAttributes: ['rowCount', 'oddeven' ]
+		} );
+
+		editor.model.schema.extend( 'tableCell', {
+			allowAttributes: [ 'colCount', 'oddeven' ]
+		} );
+
+		editor.conversion.for( 'downcast' ).add( ( dispatcher ) => {
 			dispatcher.on(
 				'insert:table',
-				(evt, data, conversionApi) => {
-					console.log('evt', evt);
-					console.log('data', data);
-					console.log('item', data.item);
-					console.log('conversionApi', conversionApi);
-					console.log('child', data.item.getChild(0));
+				( evt, data, conversionApi ) => {
 					const tableRows = data.item.getChildren();
 					const viewWriter = conversionApi.writer;
-					const viewElement = conversionApi.mapper.toViewElement(
-						data.item
-					);
+					const tableViewElement = conversionApi.mapper.toViewElement( data.item );
 
-					const viewElementData =
-						conversionApi.mapper.toViewElement(data);
-					console.log('viewElement', viewElement);
-					console.log('viewElementData', viewElementData);
+					const generalRowCount = this.getGeneralRowCount( data.item );
+					const generalColCount = this.getGeneralColCount( data.item );
 
-					viewWriter.setAttribute(
-						'ccfontsize',
-						'text-default',
-						viewElement
-					);
-					// viewWriter.setAttribute(
-					// 	'class',
-					// 	'text-default',
-					// 	viewElement
-					// );
+					let tableClasses = 'rows_total_' + generalRowCount + ' cols_total_' + generalColCount;
 
-					editor.model.change((modelWriter) => {
-						modelWriter.setAttribute(
-							'listFontsize',
-							'text-default',
-							data.item
-						);
-					});
+					tableClasses = this.getMergedClasses( tableClasses, tableViewElement.getClassNames() );
 
-					editor.editing.view.change((writer) => {
-						console.log('data.item', data.item);
-						writer.setAttribute('class', 'test123', data.item);
-					});
+					viewWriter.setAttribute( 'class', tableClasses, tableViewElement );
 
-					// for (let row of tableRows) {
-					// 	console.log('row', row); // 1, "string", false
-					// 	const cells = row.getChildren();
-					// 	for (let cell of cells) {
-					// 		console.log('cell', cell); // 1, "string", false
-					// 		// editor.model.change((writer) => {
-					// 		// 	console.log('hini');
-					// 		// 	writer.setAttribute('class', 'test', cell);
-					// 		// });
-					// 		viewWriter.setAttribute('myclass', 'test', cell);
-					// 		const viewWriter = conversionApi.writer;
-					// 		const viewElement =
-					// 			conversionApi.mapper.toViewElement(cell);
+					let rowCount = 0;
 
-					// 		viewWriter.setAttribute(
-					// 			'ccfontsize',
-					// 			'text-default',
-					// 			viewElement
-					// 		);
-					// 		viewWriter.setAttribute(
-					// 			'class',
-					// 			'text-default',
-					// 			viewElement
-					// 		);
+					for ( let row of tableRows ) {
+						rowCount++;
 
-					// 		editor.model.change((modelWriter) => {
-					// 			modelWriter.setAttribute(
-					// 				'listFontsize',
-					// 				'text-default',
-					// 				data.item
-					// 			);
-					// 		});
-					// 		// viewWriter.addClass('test', cell);
-					// 	}
-					// 	// editor.model.change((writer) => {
-					// 	// 	console.log('hini');
-					// 	// 	writer.setAttribute('class', 'test', row);
-					// 	// });
-					// 	// viewWriter.setAttribute('class', 'test', row);
-					// }
+						const tableRowViewElement = conversionApi.mapper.toViewElement( row );
+						const columns = row.getChildren();
 
-					// const viewWriter = conversionApi.writer;
-					// const viewSelection = viewWriter.document.selection;
+						let oddevenRow = 'even';
+						let rowClasses = '';
 
-					// // Adding a new CSS class is done by wrapping all link ranges and selection
-					// // in a new attribute element with the "target" attribute.
-					// const viewElement = viewWriter.createAttributeElement(
-					// 	'a',
-					// 	{
-					// 		target: '_blank',
-					// 	},
-					// 	{
-					// 		priority: 5,
-					// 	}
-					// );
+						rowClasses += 'row_' + rowCount;
 
-					// if (data.attributeNewValue.match(/ckeditor\.com/)) {
-					// 	viewWriter.unwrap(
-					// 		conversionApi.mapper.toViewRange(data.range),
-					// 		viewElement
-					// 	);
-					// } else {
-					// 	if (data.item.is('selection')) {
-					// 		viewWriter.wrap(
-					// 			viewSelection.getFirstRange(),
-					// 			viewElement
-					// 		);
-					// 	} else {
-					// 		viewWriter.wrap(
-					// 			conversionApi.mapper.toViewRange(data.range),
-					// 			viewElement
-					// 		);
-					// 	}
-					// }
-				},
-				{ priority: 'low' }
-			);
-		});
-		// editor.conversion.for('downcast').add((dispatcher) => {
-		// 	dispatcher.on('attribute', (evt, data, conversionApi) => {
-		// 		console.log('data.item.name', data);
-		// 		if (data.item.name != 'table') {
-		// 			return;
-		// 		}
+						if ( ( rowCount % 2 ) !== 0 ) {
+							oddevenRow = 'odd';
+						}
 
-		// 		const viewWriter = conversionApi.writer;
-		// 		const viewElement = conversionApi.mapper.toViewElement(
-		// 			data.item
-		// 		);
+						rowClasses += ' ' + oddevenRow;
 
-		// 		console.log('123', viewElement);
+						rowClasses = this.getMergedClasses( rowClasses, tableRowViewElement.getClassNames() );
 
-		// 		if (data.attributeKey == 'listFontsize') {
-		// 			viewWriter.setAttribute(
-		// 				'ccfontsize',
-		// 				data.attributeNewValue,
-		// 				viewElement
-		// 			);
-		// 			viewWriter.setAttribute(
-		// 				'class',
-		// 				data.attributeNewValue,
-		// 				viewElement
-		// 			);
-		// 		}
-		// 	});
-		// });
-		// editor.conversion.for('upcast').attributeToAttribute({
-		// 	model: {
-		// 		name: 'table',
-		// 		key: 'listFontsize',
-		// 		value: (viewElement) => {
-		// 			return viewElement.getAttribute('ccfontsize');
-		// 		},
-		// 	},
-		// 	view: {
-		// 		name: 'table',
-		// 		key: 'ccfontsize',
-		// 	},
-		// 	converterPriority: 'lowest',
-		// });
+						viewWriter.setAttribute( 'class', rowClasses, tableRowViewElement );
+
+						let columnCount = 0;
+
+						for ( let column of columns ) {
+							columnCount++;
+
+							const tableRowColumnViewElement = conversionApi.mapper.toViewElement( column );
+
+							let oddevenColumn = 'even';
+							let columnClasses = '';
+
+							columnClasses += 'col_' + columnCount;
+
+							if ( ( columnCount % 2 ) !== 0 ) {
+								oddevenColumn = 'odd';
+							}
+
+							columnClasses += ' ' + oddevenColumn;
+
+							columnClasses = this.getMergedClasses( columnClasses, tableRowColumnViewElement.getClassNames() );
+
+							viewWriter.setAttribute( 'class', columnClasses, tableRowColumnViewElement );
+						}
+					}
+				} );
+		} );
+	}
+
+	getGeneralRowCount( tableItem ) {
+		let rowCount = 0;
+
+		for ( let row of tableItem.getChildren() ) {
+			rowCount++;
+		}
+
+		return rowCount;
+	}
+
+	getGeneralColCount( tableItem ) {
+		let colCount = 0;
+
+		for ( let row of tableItem.getChildren() ) {
+			const cols = row.getChildren();
+
+			for ( let col of cols ) {
+				colCount++;
+			}
+
+			break;
+		}
+
+		return colCount;
+	}
+
+	getMergedClasses( tableClasses, elementClasses ) {
+		for ( let className of elementClasses ) {
+			tableClasses += ' ' + className;
+		}
+
+		return tableClasses;
 	}
 }
 
