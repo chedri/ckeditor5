@@ -8,18 +8,6 @@ class TableExtended extends Plugin {
 	}
 
 	addClassesToTables( editor ) {
-		editor.model.schema.extend( 'table', {
-			allowAttributes: [ 'totalRows', 'totalCols' ]
-		} );
-
-		editor.model.schema.extend( 'tableRow', {
-			allowAttributes: ['rowCount', 'oddeven' ]
-		} );
-
-		editor.model.schema.extend( 'tableCell', {
-			allowAttributes: [ 'colCount', 'oddeven' ]
-		} );
-
 		editor.conversion.for( 'downcast' ).add( ( dispatcher ) => {
 			dispatcher.on(
 				'insert:table',
