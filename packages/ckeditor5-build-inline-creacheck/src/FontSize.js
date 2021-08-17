@@ -7,13 +7,13 @@ class FontSize extends Plugin {
 		this.customFontSizeDropDown(editor);
 	}
 
-	setClass(editor, addClass, item) {
+	setClass(editor, addClass, item, itemModel) {
 		editor.editing.view.change((writer) => {
 			writer.setAttribute('class', `text-${addClass}`, item);
 			writer.setAttribute('ccfontsize', `text-${addClass}`, item);
 		});
 		editor.model.change(modelWriter => {
-			modelWriter.setAttribute('listFontsize', `text-${addClass}`, editor.model.document.selection.getFirstPosition().parent);
+			modelWriter.setAttribute('listFontsize', `text-${addClass}`, itemModel);
 		});
 	}
 
@@ -28,18 +28,38 @@ class FontSize extends Plugin {
 					evt.source.commandParam === undefined
 						? 'default'
 						: evt.source.commandParam;
-				const listItem =
-					editor.editing.view.document.selection.focus.parent;
-				if (listItem.name == 'li') {
-					this.setClass(editor, commandParam, listItem);
-				} else {
-					const listItem =
-						editor.editing.view.document.selection.focus.parent
-							.parent;
-					if (listItem.name === 'li')
-						this.setClass(editor, commandParam, listItem);
+				const listItem = editor.editing.view.document.selection.focus.parent;
+				const elementStart = editor.editing.view.document.selection.getFirstPosition().parent;
+				const elementEnd = editor.editing.view.document.selection.getLastPosition().parent;
+				const elementModel = editor.model.document.selection.getFirstPosition().parent;
+
+				if ( elementStart.index === elementEnd.index ) {
+					if ( listItem.name === 'li' ) {
+						this.setClass( editor, commandParam, listItem, elementModel );
+					} else {
+						const listItem = editor.editing.view.document.selection.focus.parent.parent;
+						if ( listItem.name === 'li' ) {
+							this.setClass( editor, commandParam, listItem, elementModel );
+						}
+					}
+				} else if ( elementStart.name === 'li' ) {
+					let loopEnd = false;
+					let loopElement = elementStart;
+					let loopElementModel = elementModel;
+
+					while ( loopEnd === false ) {
+						this.setClass( editor, commandParam, loopElement, loopElementModel );
+
+						if ( loopElement.nextSibling !== null && loopElement.index < elementEnd.index ) {
+							loopElement = loopElement.nextSibling;
+							loopElementModel = loopElementModel.nextSibling;
+						} else {
+							loopEnd = true;
+						}
+					}
 				}
 			});
+
 			return dropdownView;
 		});
 	}
