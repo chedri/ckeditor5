@@ -7,6 +7,7 @@
 import InlineEditorBase from '@ckeditor/ckeditor5-editor-inline/src/inlineeditor';
 
 import KeepFontsize from './KeepFontsize';
+import TableExtended from './Table';
 import FontSize from './FontSize';
 import SpanTag from './SpanTag';
 import Icons from './Icons';
@@ -98,6 +99,7 @@ InlineEditor.builtinPlugins = [
 	TextTransformation,
 	WordCount,
 	Icons,
+	TableExtended
 ];
 
 // Editor configuration.
