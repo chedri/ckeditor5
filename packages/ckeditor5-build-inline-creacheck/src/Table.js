@@ -1,97 +1,125 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 class TableExtended extends Plugin {
-
 	init() {
 		const editor = this.editor;
-		this.addClassesToTables( editor );
+		editor.conversion.attributeToAttribute({
+			model: 'class',
+			view: 'class',
+		});
+		this.addClassesToTables(editor);
 	}
 
-	addClassesToTables( editor ) {
-		editor.conversion.for( 'downcast' ).add( ( dispatcher ) => {
-			dispatcher.on(
-				'insert:table',
-				( evt, data, conversionApi ) => {
-					const tableRows = data.item.getChildren();
-					const viewWriter = conversionApi.writer;
-					const tableViewElement = conversionApi.mapper.toViewElement( data.item );
+	addClassesToTables(editor) {
+		editor.conversion.for('downcast').add((dispatcher) => {
+			dispatcher.on('insert:table', (evt, data, conversionApi) => {
+				const viewWriter = conversionApi.writer;
 
-					const generalRowCount = this.getGeneralRowCount( data.item );
-					const generalColCount = this.getGeneralColCount( data.item );
+				const tableRows = data.item.getChildren();
+				const tableViewElement = conversionApi.mapper.toViewElement(
+					data.item
+				);
 
-					let tableClasses = 'rows_total_' + generalRowCount + ' cols_total_' + generalColCount;
+				const generalRowCount = this.getGeneralRowCount(data.item);
+				const generalColCount = this.getGeneralColCount(data.item);
 
-					tableClasses = this.getMergedClasses( tableClasses, tableViewElement.getClassNames() );
+				let tableClasses =
+					'rows_total_' +
+					generalRowCount +
+					' cols_total_' +
+					generalColCount;
 
-					viewWriter.setAttribute( 'class', tableClasses, tableViewElement );
+				tableClasses = this.getMergedClasses(
+					tableClasses,
+					tableViewElement.getClassNames()
+				);
 
-					let rowCount = 0;
+				editor.model.change((modelWriter) => {
+					modelWriter.setAttribute('class', tableClasses, data.item);
+				});
 
-					for ( let row of tableRows ) {
-						rowCount++;
+				let rowCount = 0;
 
-						const tableRowViewElement = conversionApi.mapper.toViewElement( row );
-						const columns = row.getChildren();
+				for (let row of tableRows) {
+					rowCount++;
+					const tableRowViewElement =
+						conversionApi.mapper.toViewElement(row);
+					const columns = row.getChildren();
 
-						let oddevenRow = 'even';
-						let rowClasses = '';
+					let oddevenRow = 'even';
+					let rowClasses = '';
 
-						rowClasses += 'row_' + rowCount;
+					rowClasses += 'row_' + rowCount;
 
-						if ( ( rowCount % 2 ) !== 0 ) {
-							oddevenRow = 'odd';
-						}
-
-						rowClasses += ' ' + oddevenRow;
-
-						rowClasses = this.getMergedClasses( rowClasses, tableRowViewElement.getClassNames() );
-
-						viewWriter.setAttribute( 'class', rowClasses, tableRowViewElement );
-
-						let columnCount = 0;
-
-						for ( let column of columns ) {
-							columnCount++;
-
-							const tableRowColumnViewElement = conversionApi.mapper.toViewElement( column );
-
-							let oddevenColumn = 'even';
-							let columnClasses = '';
-
-							columnClasses += 'col_' + columnCount;
-
-							if ( ( columnCount % 2 ) !== 0 ) {
-								oddevenColumn = 'odd';
-							}
-
-							columnClasses += ' ' + oddevenColumn;
-
-							columnClasses = this.getMergedClasses( columnClasses, tableRowColumnViewElement.getClassNames() );
-
-							viewWriter.setAttribute( 'class', columnClasses, tableRowColumnViewElement );
-						}
+					if (rowCount % 2 !== 0) {
+						oddevenRow = 'odd';
 					}
-				} );
-		} );
+
+					rowClasses += ' ' + oddevenRow;
+
+					rowClasses = this.getMergedClasses(
+						rowClasses,
+						tableRowViewElement.getClassNames()
+					);
+
+					editor.model.change((modelWriter) => {
+						modelWriter.setAttribute('class', rowClasses, row);
+					});
+
+					let columnCount = 0;
+
+					for (let column of columns) {
+						columnCount++;
+
+						const tableRowColumnViewElement =
+							conversionApi.mapper.toViewElement(column);
+
+						let oddevenColumn = 'even';
+						let columnClasses = '';
+
+						columnClasses += 'col_' + columnCount;
+
+						if (columnCount % 2 !== 0) {
+							oddevenColumn = 'odd';
+						}
+
+						columnClasses += ' ' + oddevenColumn;
+
+						columnClasses = this.getMergedClasses(
+							columnClasses,
+							tableRowColumnViewElement.getClassNames()
+						);
+
+						editor.model.change((modelWriter) => {
+							modelWriter.setAttribute(
+								'class',
+								columnClasses,
+								column
+							);
+						});
+					}
+				}
+			});
+		});
 	}
 
-	getGeneralRowCount( tableItem ) {
+	getGeneralRowCount(tableItem) {
 		let rowCount = 0;
 
-		for ( let row of tableItem.getChildren() ) {
+		for (let row of tableItem.getChildren()) {
 			rowCount++;
 		}
 
 		return rowCount;
 	}
 
-	getGeneralColCount( tableItem ) {
+	getGeneralColCount(tableItem) {
 		let colCount = 0;
 
-		for ( let row of tableItem.getChildren() ) {
+		for (let row of tableItem.getChildren()) {
 			const cols = row.getChildren();
 
-			for ( let col of cols ) {
+			for (let col of cols) {
 				colCount++;
 			}
 
@@ -101,8 +129,8 @@ class TableExtended extends Plugin {
 		return colCount;
 	}
 
-	getMergedClasses( tableClasses, elementClasses ) {
-		for ( let className of elementClasses ) {
+	getMergedClasses(tableClasses, elementClasses) {
+		for (let className of elementClasses) {
 			tableClasses += ' ' + className;
 		}
 
