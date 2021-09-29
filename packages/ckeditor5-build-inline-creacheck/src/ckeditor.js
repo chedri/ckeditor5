@@ -54,6 +54,7 @@ import {
 } from '@ckeditor/ckeditor5-table';
 import TextTransformation from '@ckeditor/ckeditor5-typing/src/texttransformation';
 import WordCount from '@ckeditor/ckeditor5-word-count/src/wordcount';
+import PasteAsPlaintext from './PasteAsPlaintext';
 
 export default class InlineEditor extends InlineEditorBase {}
 
@@ -99,7 +100,8 @@ InlineEditor.builtinPlugins = [
 	TextTransformation,
 	WordCount,
 	Icons,
-	TableExtended
+	TableExtended,
+	PasteAsPlaintext
 ];
 
 // Editor configuration.
