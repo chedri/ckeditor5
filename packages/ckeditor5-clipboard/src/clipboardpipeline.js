@@ -250,7 +250,13 @@ export default class ClipboardPipeline extends Plugin {
 			return (spaces.length > 0) ? spaces.replace(/./, " ").slice(Math.floor(spaces.length/2)).split("").join("\u00a0") : '';
 		});
 
-		return str.replace( /<\/?[^>]+>/gi, '' );
+		str = str.replace(/<\/p>/gi, '{br}');
+
+		str = str.replace( /<\/?[^>]+>/gi, '' );
+
+		str = str.replace( /\{br}/gi, '<br>' );
+
+		return str;
 	}
 
 	/**
