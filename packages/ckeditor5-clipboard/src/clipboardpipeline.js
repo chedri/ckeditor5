@@ -166,9 +166,11 @@ export default class ClipboardPipeline extends Plugin {
 			// Some feature could already inject content in the higher priority event handler (i.e., codeBlock).
 			if ( !content ) {
 				if ( dataTransfer.getData( 'text/html' ) ) {
-					content = normalizeClipboardHtml( dataTransfer.getData( 'text/html' ) );
+					content = this.stripHTML( dataTransfer.getData( 'text/html' ) );
+					content = normalizeClipboardHtml( content );
 				} else if ( dataTransfer.getData( 'text/plain' ) ) {
-					content = plainTextToHtml( dataTransfer.getData( 'text/plain' ) );
+					content = this.stripHTML( dataTransfer.getData( 'text/plain' ) );
+					content = plainTextToHtml( content );
 				}
 
 				content = this.editor.data.htmlProcessor.toView( content );
@@ -226,6 +228,35 @@ export default class ClipboardPipeline extends Plugin {
 		this.listenTo( this, 'contentInsertion', ( evt, data ) => {
 			data.resultRange = model.insertContent( data.content );
 		}, { priority: 'low' } );
+	}
+
+	stripHTML( str ) {
+		// Word comments like conditional comments etc
+		str = str.replace(/<!--[\s\S]+?-->/gi, '');
+
+		// Remove comments, scripts (e.g., msoShowComment), XML tag, VML content,
+		// MS Office namespaced tags, and a few other tags
+		str = str.replace(/<(!|script[^>]*>.*?<\/script(?=[>\s])|\/?(\?xml(:\w+)?|img|meta|link|style|\w:\w+)(?=[\s\/>]))[^>]*>/gi, '');
+
+		// Convert <s> into <strike> for line-though
+		str = str.replace(/<(\/?)s>/gi, "<$1strike>");
+
+		// Replace nbsp entites to char since it's easier to handle
+		str = str.replace(/&nbsp;/gi, ' ');
+
+		// Convert <span style="mso-spacerun:yes">___</span> to string of alternating
+		// breaking/non-breaking spaces of same length
+		str = str.replace(/<span\s+style\s*=\s*"\s*mso-spacerun\s*:\s*yes\s*;?\s*"\s*>([\s\u00a0]*)<\/span>/gi, function(str, spaces) {
+			return (spaces.length > 0) ? spaces.replace(/./, " ").slice(Math.floor(spaces.length/2)).split("").join("\u00a0") : '';
+		});
+
+		str = str.replace(/<\/p>/gi, '{br}');
+
+		str = str.replace( /<\/?[^>]+>/gi, '' );
+
+		str = str.replace( /\{br}/gi, '<br>' );
+
+		return str;
 	}
 
 	/**

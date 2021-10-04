@@ -99,7 +99,7 @@ InlineEditor.builtinPlugins = [
 	TextTransformation,
 	WordCount,
 	Icons,
-	TableExtended
+	TableExtended,
 ];
 
 // Editor configuration.
