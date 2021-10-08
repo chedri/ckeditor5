@@ -54,9 +54,12 @@ export default class InsertParagraphCommand extends Command {
 				position = writer.split( position, allowedParent ).position;
 			}
 
+			writer.insertText('Neuer Absatz ...', { fontSize: 'default' }, paragraph);
+
 			model.insertContent( paragraph, position );
 
-			writer.setSelection( paragraph, 'in' );
+			writer.setSelection( position, 'end' );
+
 		} );
 	}
 }
