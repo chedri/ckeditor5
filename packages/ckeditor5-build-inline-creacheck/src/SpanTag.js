@@ -15,7 +15,7 @@ class SpanTag extends Plugin {
 			writer.insertText( ' ', { invert: true, fontSize }, newElement );
 			if (editor.model.document.selection.focus.isAtEnd) {
 				writer.insert( newElement, element, 'after' );
-				writer.setSelection( newElement, 1 );
+				writer.setSelection( newElement, 0 );
 			} else if ( editor.model.document.selection.focus.isAtStart ) {
 				writer.insert( newElement, element, 'before' );
 				writer.setSelection( newElement, 0 );
