@@ -59,6 +59,11 @@ export default class InlineEditor extends InlineEditorBase {}
 
 // Plugins to include in the build.
 InlineEditor.builtinPlugins = [
+	Table,
+	TableToolbar,
+	TableCellProperties,
+	TableProperties,
+	TableExtended,
 	KeepFontsize,
 	SpanTag,
 	List,
@@ -92,14 +97,9 @@ InlineEditor.builtinPlugins = [
 	IndentBlock,
 	Link,
 	Paragraph,
-	Table,
-	TableToolbar,
-	TableCellProperties,
-	TableProperties,
 	TextTransformation,
 	WordCount,
 	Icons,
-	TableExtended,
 ];
 
 // Editor configuration.
