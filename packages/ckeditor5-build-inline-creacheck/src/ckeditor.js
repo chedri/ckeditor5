@@ -54,6 +54,7 @@ import {
 } from '@ckeditor/ckeditor5-table';
 import TextTransformation from '@ckeditor/ckeditor5-typing/src/texttransformation';
 import WordCount from '@ckeditor/ckeditor5-word-count/src/wordcount';
+import Placeholder from 'ckeditor5-placeholder';
 
 export default class InlineEditor extends InlineEditorBase {}
 
@@ -100,6 +101,7 @@ InlineEditor.builtinPlugins = [
 	TextTransformation,
 	WordCount,
 	Icons,
+	Placeholder
 ];
 
 // Editor configuration.
@@ -123,7 +125,15 @@ InlineEditor.defaultConfig = {
 			'mediaEmbed',
 			'undo',
 			'redo',
+			'placeholder'
 		],
+	},
+	placeholderProps: {
+		types: [ 'First name', 'Date' ],
+	},
+	placeholderBrackets: {
+		open: '{',
+		close: '}'
 	},
 	image: {
 		toolbar: [
