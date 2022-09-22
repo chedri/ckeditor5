@@ -15,7 +15,7 @@ class TableExtended extends Plugin {
 			dispatcher.on('insert:table', (evt, data, conversionApi) => {
 				const viewWriter = conversionApi.writer;
 
-				const tableRows = data.item.getChildren();
+				const tableRows = data.item._children;
 				const tableViewElement = conversionApi.mapper.toViewElement(
 					data.item
 				);
@@ -44,12 +44,12 @@ class TableExtended extends Plugin {
 					rowCount++;
 					const tableRowViewElement =
 						conversionApi.mapper.toViewElement(row);
-					const columns = row.getChildren();
+					const columns = row._children;
 
 					let oddevenRow = 'even';
 					let rowClasses = '';
 
-					rowClasses += 'row_' + rowCount;
+					rowClasses += 'row_' + rowCount + ' total_row_' + tableRows._nodes.length;
 
 					if (rowCount % 2 !== 0) {
 						oddevenRow = 'odd';
@@ -77,7 +77,7 @@ class TableExtended extends Plugin {
 						let oddevenColumn = 'even';
 						let columnClasses = '';
 
-						columnClasses += 'col_' + columnCount;
+						columnClasses += 'col_' + columnCount + ' total_row_' + columns.length;
 
 						if (columnCount % 2 !== 0) {
 							oddevenColumn = 'odd';
@@ -106,7 +106,7 @@ class TableExtended extends Plugin {
 	getGeneralRowCount(tableItem) {
 		let rowCount = 0;
 
-		for (let row of tableItem.getChildren()) {
+		for (let row of tableItem._children) {
 			rowCount++;
 		}
 
@@ -115,15 +115,17 @@ class TableExtended extends Plugin {
 
 	getGeneralColCount(tableItem) {
 		let colCount = 0;
+		let maxCount = 0;
 
-		for (let row of tableItem.getChildren()) {
-			const cols = row.getChildren();
-
+		for (let row of tableItem._children) {
+			const cols = row._children;
+			colCount = 0;
 			for (let col of cols) {
 				colCount++;
+				if(colCount > maxCount){
+					maxCount++;
+				}
 			}
-
-			break;
 		}
 
 		return colCount;
