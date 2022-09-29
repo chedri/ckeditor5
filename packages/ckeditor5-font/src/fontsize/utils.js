@@ -126,9 +126,7 @@ function generatePixelPreset( definition ) {
 
 	definition.view = {
 		name: 'span',
-		styles: {
-			'font-size': definition.model
-		}
+		classes: 'text-ownSize-' + definition.model
 	};
 
 	return attachPriority( definition );
