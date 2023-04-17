@@ -21,7 +21,12 @@ class SpanTag extends Plugin {
 				writer.setSelection( newElement, 0 );
 			} else {
 				const positionOfSplit = writer.split( editor.model.document.selection.getFirstPosition() );
+				/* original code, maybe we need it again
 				writer.setSelection( writer.createPositionBefore( positionOfSplit.position.nodeAfter ) );
+				*/
+
+				/* new code */
+				writer.setSelection(positionOfSplit.position.nodeAfter, 0 );
 			}
 		});
 	}

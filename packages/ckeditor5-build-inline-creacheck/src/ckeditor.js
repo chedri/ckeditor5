@@ -18,6 +18,7 @@ import {
 	FontFamily,
 	Font,
 } from '@ckeditor/ckeditor5-font';
+import FontColorCustom from './FontColorCustom';
 import RemoveFormat from '@ckeditor/ckeditor5-remove-format/src/removeformat';
 import {
 	SpecialCharactersText,
@@ -72,6 +73,7 @@ InlineEditor.builtinPlugins = [
 	Font,
 	FontSize,
 	FontColor,
+	FontColorCustom,
 	FontFamily,
 	FontBackgroundColor,
 	RemoveFormat,
