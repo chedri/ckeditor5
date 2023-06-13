@@ -78,6 +78,7 @@ class FontColorCustom extends Plugin {
 				if ( data.item.getAttribute( 'listFontColor' ) === undefined ) {
 					const viewWriter = conversionApi.writer;
 					const viewElement = conversionApi.mapper.toViewElement( data.item );
+				}
 			} );
 		} );
 
