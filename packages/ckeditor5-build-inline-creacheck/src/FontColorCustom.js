@@ -80,15 +80,6 @@ class FontColorCustom extends Plugin {
 					const viewElement = conversionApi.mapper.toViewElement( data.item );
 
 					viewWriter.setAttribute( 'ccfontcolor', 'color:#000000', viewElement ); /* Initialcolor */
-					viewWriter.setAttribute( 'style', 'color:#000000', viewElement );
-
-					editor.model.change( modelWriter => {
-						modelWriter.setAttribute(
-							'listFontColor',
-							'color:#000000',
-							data.item
-						);
-					} );
 				}
 			} );
 		} );
