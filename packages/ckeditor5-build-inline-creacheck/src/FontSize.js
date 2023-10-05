@@ -1,50 +1,134 @@
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';class KeepFontsize extends Plugin {
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+
+class FontSize extends Plugin {
 	init() {
 		const editor = this.editor;
-		this.ccListenForEvent( editor );
-		this.ccListenForEventParagraph( editor );
-		this.ccListenForEventInsertP( editor );
+		this.allowAttributeCcFontSizeInList(editor);
+		this.customFontSizeDropDown(editor);
 	}
 
-	ccListenForEvent( editor ) {
-		editor.conversion.for( 'downcast' ).add( dispatcher => {
-			dispatcher.on( 'remove:$text', ( evt, data, conversionApi ) => {
-				if ( data.position.nodeBefore === null ) {
-					editor.execute( 'fontSize', { value: 'default' } );
-				}
-			} );
-		} );
+	setClass(editor, addClass, item, itemModel) {
+		editor.editing.view.change((writer) => {
+			writer.setAttribute('class', `text-${addClass}`, item);
+			writer.setAttribute('ccfontsize', `text-${addClass}`, item);
+		});
+		editor.model.change(modelWriter => {
+			modelWriter.setAttribute('listFontsize', `text-${addClass}`, itemModel);
+		});
 	}
 
-	/* This function is necessary if several lines e.g. can be marked
-	and deleted by ctrl + a. ccListenForEvent only reacts when text
-	within the p tag is deleted. ccListenForEventParagraph also reacts
-	across multiple lines or p tags */
-	ccListenForEventParagraph( editor ) {
-		editor.conversion.for( 'downcast' ).add( dispatcher => {
-			dispatcher.on( 'remove:paragraph', ( evt, data, conversionApi ) => {
-				if ( data.position.nodeBefore === null ) {
-					editor.execute( 'fontSize', { value: 'default' } );
-				}
-			} );
-		} );
-	}
+	customFontSizeDropDown(editor) {
+		editor.ui.componentFactory.add('fontSizeDropdown', () => {
+			const editor = this.editor;
 
-	ccListenForEventInsertP( editor ) {
-		editor.conversion.for( 'downcast' ).add( dispatcher => {
-			dispatcher.on( 'insert:paragraph', ( evt, data, conversionApi ) => {
-				if (data.item &&
-					data.item.name === 'paragraph' &&
-					data.item._children &&
-					data.item._children._nodes &&
-					data.item._children._nodes.length === 0            ) {
-					if (editor.model.document.selection.anchor.parent === data.item) {
-						editor.execute('fontSize', { value: 'default' });
+			// Use original fontSize button - we only changes its behavior.
+			const dropdownView = editor.ui.componentFactory.create('fontSize');
+			dropdownView.on('execute', (evt) => {
+				const commandParam =
+					evt.source.commandParam === undefined
+						? 'default'
+						: evt.source.commandParam;
+				const listItem = editor.editing.view.document.selection.focus.parent;
+				const elementStart = editor.editing.view.document.selection.getFirstPosition().parent;
+				const elementEnd = editor.editing.view.document.selection.getLastPosition().parent;
+				const elementModel = editor.model.document.selection.getFirstPosition().parent;
+
+				if ( elementStart.index === elementEnd.index ) {
+					if ( listItem.name === 'li' ) {
+						this.setClass( editor, commandParam, listItem, elementModel );
+					} else {
+						const listItem = editor.editing.view.document.selection.focus.parent.parent;
+						if ( listItem.name === 'li' ) {
+							this.setClass( editor, commandParam, listItem, elementModel );
+						}
+					}
+				} else if ( elementStart.name === 'li' ) {
+					let loopEnd = false;
+					let loopElement = elementStart;
+					let loopElementModel = elementModel;
+
+					while ( loopEnd === false ) {
+						this.setClass( editor, commandParam, loopElement, loopElementModel );
+
+						if ( loopElement.nextSibling !== null && loopElement.index < elementEnd.index ) {
+							loopElement = loopElement.nextSibling;
+							loopElementModel = loopElementModel.nextSibling;
+						} else {
+							loopEnd = true;
+						}
 					}
 				}
+			});
+
+			return dropdownView;
+		});
+	}
+
+	allowAttributeCcFontSizeInList( editor ) {
+		editor.model.schema.extend( 'listItem', { allowAttributes: 'listFontsize' } );
+
+		editor.conversion.for( 'downcast' ).add( dispatcher => {
+			dispatcher.on( 'insert:listItem', ( evt, data, conversionApi ) => {
+				if ( data.item.getAttribute( 'listFontsize' ) === undefined ) {
+					const viewWriter = conversionApi.writer;
+					const viewElement = conversionApi.mapper.toViewElement( data.item );
+
+					viewWriter.setAttribute( 'ccfontsize', 'text-default', viewElement );
+					viewWriter.setAttribute( 'class', 'text-default', viewElement );
+
+					editor.model.change( modelWriter => {
+						modelWriter.setAttribute(
+							'listFontsize',
+							'text-default',
+							data.item
+						);
+					} );
+				}
 			} );
 		} );
+
+		editor.conversion.for('downcast').add(dispatcher => {
+			dispatcher.on('attribute', (evt, data, conversionApi) => {
+
+				if (data.item.name != 'listItem') {
+					return;
+				}
+
+				const viewWriter = conversionApi.writer;
+				const viewElement = conversionApi.mapper.toViewElement(
+					data.item
+				);
+
+				if( data.attributeKey == 'listFontsize' ) {
+					viewWriter.setAttribute(
+						'ccfontsize',
+						data.attributeNewValue,
+						viewElement
+					);
+					viewWriter.setAttribute(
+						'class',
+						data.attributeNewValue,
+						viewElement
+					);
+				}
+			});
+		});
+
+		editor.conversion.for('upcast').attributeToAttribute({
+			model: {
+				name: 'listItem',
+				key: 'listFontsize',
+				value: viewElement => {
+					return viewElement.getAttribute( 'ccfontsize' );
+				}
+			},
+			view: {
+				name: 'li',
+				key: 'ccfontsize',
+			},
+			converterPriority: 'lowest'
+		});
 	}
 }
 
-export default KeepFontsize;
+export default FontSize;

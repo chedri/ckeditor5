@@ -5,6 +5,7 @@ class KeepFontsize extends Plugin {
 		const editor = this.editor;
 		this.ccListenForEvent( editor );
 		this.ccListenForEventParagraph( editor );
+		this.ccListenForEventInsertP( editor );
 	}
 
 	ccListenForEvent( editor ) {
@@ -26,6 +27,22 @@ class KeepFontsize extends Plugin {
 			dispatcher.on( 'remove:paragraph', ( evt, data, conversionApi ) => {
 				if ( data.position.nodeBefore === null ) {
 					editor.execute( 'fontSize', { value: 'default' } );
+				}
+			} );
+		} );
+	}
+
+	ccListenForEventInsertP( editor ) {
+		editor.conversion.for( 'downcast' ).add( dispatcher => {
+			dispatcher.on( 'insert:paragraph', ( evt, data, conversionApi ) => {
+				if ( data.item &&
+					data.item.name === 'paragraph' &&
+					data.item._children &&
+					data.item._children._nodes &&
+					data.item._children._nodes.length === 0 ) {
+					if ( editor.model.document.selection.anchor.parent === data.item ) {
+						editor.execute( 'fontSize', { value: 'default' } );
+					}
 				}
 			} );
 		} );
